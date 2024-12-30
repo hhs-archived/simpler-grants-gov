@@ -1,5 +1,8 @@
 import Cookies from "js-cookie";
-import { FeatureFlagsManager } from "src/services/FeatureFlagManager";
+import {
+  FeatureFlags,
+  FeatureFlagsManager,
+} from "src/services/FeatureFlagManager";
 
 import { useEffect, useState } from "react";
 
@@ -29,9 +32,9 @@ import { useEffect, useState } from "react";
  * }
  * ```
  */
-export function useFeatureFlags() {
+export function useFeatureFlags(serverSideFlags?: FeatureFlags) {
   const [featureFlagsManager, setFeatureFlagsManager] = useState(
-    new FeatureFlagsManager(Cookies),
+    new FeatureFlagsManager({ cookies: Cookies, serverSideFlags }),
   );
   const [mounted, setMounted] = useState(false);
 
@@ -41,7 +44,7 @@ export function useFeatureFlags() {
 
   function setFeatureFlag(name: string, value: boolean) {
     featureFlagsManager.setFeatureFlagCookie(name, value);
-    setFeatureFlagsManager(new FeatureFlagsManager(Cookies));
+    setFeatureFlagsManager(new FeatureFlagsManager({ cookies: Cookies }));
   }
 
   return { featureFlagsManager, mounted, setFeatureFlag };

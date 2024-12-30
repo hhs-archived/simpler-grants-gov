@@ -23,6 +23,8 @@ export default function Layout({ children, locale }: Props) {
 
   const t = useTranslations();
   const messages = useMessages();
+  // eslint-disable-next-line
+  console.log("$$$$ in layout", featureFlags);
 
   return (
     // Stick the footer to the bottom of the page

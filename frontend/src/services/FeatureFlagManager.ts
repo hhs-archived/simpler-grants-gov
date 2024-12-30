@@ -26,7 +26,7 @@ export type NextServerSideCookies = Partial<{
  *
  *   ```
  *   export default async function handler(request, response) {
- *     const featureFlagsManager = new FeatureFlagsManager(request.cookies)
+ *     const featureFlagsManager = new FeatureFlagsManager({ cookies: request.cookies })
  *     if (featureFlagsManager.isFeatureEnabled("someFeatureFlag")) {
  *       // Do something
  *     }
@@ -41,7 +41,7 @@ export type NextServerSideCookies = Partial<{
  *   state. Here's how you can use it directly.
  *
  *   ```
- *   const featureFlagsManager = new FeatureFlagsManager(Cookies)
+ *   const featureFlagsManager = new FeatureFlagsManager({ cookies: Cookies })
  *   if (featureFlagsManager.isFeatureEnabled("someFeatureflag")) {
  *     // Do something
  *   }
@@ -56,14 +56,21 @@ export class FeatureFlagsManager {
 
   private _cookies;
 
-  constructor(
+  private _envVarOverrides;
+
+  constructor({
+    cookies,
+    serverSideFlags,
+  }: {
     cookies?:
       | NextRequest["cookies"]
       | CookiesStatic
       | NextServerSideCookies
-      | ReadonlyRequestCookies,
-  ) {
+      | ReadonlyRequestCookies;
+    serverSideFlags?: FeatureFlags;
+  }) {
     this._cookies = cookies;
+    this._envVarOverrides = serverSideFlags;
   }
 
   get defaultFeatureFlags(): FeatureFlags {
@@ -206,6 +213,11 @@ export class FeatureFlagsManager {
   }
 
   get featureFlagsFromEnvironment() {
+    // eslint-disable-next-line
+    console.log("$$$ in manager", this._envVarOverrides);
+    if (this._envVarOverrides) {
+      return this._envVarOverrides;
+    }
     return Object.keys(this.defaultFeatureFlags).reduce(
       (featureFlagsFromEnvironment, flagName) => {
         // by convention all feature flag env var names start with "FEATURE"

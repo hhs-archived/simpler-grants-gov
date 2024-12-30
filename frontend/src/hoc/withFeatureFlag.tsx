@@ -25,7 +25,9 @@ const withFeatureFlag = <P, R>(
   ) => {
     const searchParams = props.searchParams || {};
     const ComponentWithFeatureFlag = (props: P & WithFeatureFlagProps) => {
-      const featureFlagsManager = new FeatureFlagsManager(cookies());
+      const featureFlagsManager = new FeatureFlagsManager({
+        cookies: cookies(),
+      });
 
       if (
         featureFlagsManager.isFeatureEnabled(

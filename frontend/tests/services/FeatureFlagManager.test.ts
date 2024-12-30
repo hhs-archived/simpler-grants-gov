@@ -50,7 +50,7 @@ describe("FeatureFlagsManager", () => {
     // Mock default feature flags to allow for tests to be independent of actual default values
     mockDefaultFeatureFlags(DEFAULT_FEATURE_FLAGS);
 
-    featureFlagsManager = new FeatureFlagsManager(Cookies);
+    featureFlagsManager = new FeatureFlagsManager({ cookies: Cookies });
   });
 
   test("`.featureFlagsCookie` getter loads feature flags with client-side js-cookies", () => {
@@ -58,9 +58,9 @@ describe("FeatureFlagsManager", () => {
   });
 
   test('`.featureFlagsCookie` getter loads feature flags with server-side NextRequest["cookies"]', () => {
-    const serverFeatureFlagsManager = new FeatureFlagsManager(
-      MockServerCookiesModule(),
-    );
+    const serverFeatureFlagsManager = new FeatureFlagsManager({
+      cookies: MockServerCookiesModule(),
+    });
     expect(serverFeatureFlagsManager.featureFlagsCookie).toEqual(COOKIE_VALUE);
   });
 
@@ -69,7 +69,9 @@ describe("FeatureFlagsManager", () => {
       // Was unable to override flag keys. Use feature flag class invocation default for now.
       _ff: JSON.stringify(COOKIE_VALUE),
     };
-    const serverFeatureFlagsManager = new FeatureFlagsManager(cookieRecord);
+    const serverFeatureFlagsManager = new FeatureFlagsManager({
+      cookies: cookieRecord,
+    });
     expect(serverFeatureFlagsManager.featureFlagsCookie).toEqual(COOKIE_VALUE);
   });
 
@@ -408,7 +410,9 @@ describe("FeatureFlagsManager", () => {
 
     test("correctly initializes from ReadonlyRequestCookies", () => {
       const readonlyCookies = readonlyCookiesExample;
-      const featureFlagsManager = new FeatureFlagsManager(readonlyCookies);
+      const featureFlagsManager = new FeatureFlagsManager({
+        cookies: readonlyCookies,
+      });
 
       expect(featureFlagsManager.isFeatureEnabled("feature1")).toBe(true);
       expect(featureFlagsManager.isFeatureEnabled("feature2")).toBe(false);
@@ -419,7 +423,9 @@ describe("FeatureFlagsManager", () => {
         _ff: '{"invalidFeature": true}',
       };
 
-      const featureFlagsManager = new FeatureFlagsManager(invalidFlagCookies);
+      const featureFlagsManager = new FeatureFlagsManager({
+        cookies: invalidFlagCookies,
+      });
 
       // Accessing an invalid feature flag throws an error
       expect(() =>
@@ -436,7 +442,9 @@ describe("FeatureFlagsManager", () => {
           nonBool: true,
         });
 
-        const featureFlagsManager = new FeatureFlagsManager(Cookies);
+        const featureFlagsManager = new FeatureFlagsManager({
+          cookies: Cookies,
+        });
         expect(featureFlagsManager.featureFlagsFromEnvironment).toEqual({
           fakeOne: true,
           fakeTwo: false,
@@ -454,9 +462,9 @@ describe("FeatureFlagsManager", () => {
       // Set a different state in cookies to test precedence
       const modifiedCookieValue = {};
       mockFeatureFlagsCookie(modifiedCookieValue);
-      const serverFeatureFlagsManager = new FeatureFlagsManager(
-        MockServerCookiesModule(),
-      );
+      const serverFeatureFlagsManager = new FeatureFlagsManager({
+        cookies: MockServerCookiesModule(),
+      });
 
       expect(serverFeatureFlagsManager.isFeatureEnabled("fakeOne")).toBe(true);
       expect(serverFeatureFlagsManager.isFeatureEnabled("fakeTwo")).toBe(false);
@@ -473,9 +481,9 @@ describe("FeatureFlagsManager", () => {
         fakeTwo: true,
       };
       mockFeatureFlagsCookie(modifiedCookieValue);
-      const serverFeatureFlagsManager = new FeatureFlagsManager(
-        MockServerCookiesModule(modifiedCookieValue),
-      );
+      const serverFeatureFlagsManager = new FeatureFlagsManager({
+        cookies: MockServerCookiesModule(modifiedCookieValue),
+      });
 
       expect(serverFeatureFlagsManager.isFeatureEnabled("fakeOne")).toBe(false);
       expect(serverFeatureFlagsManager.isFeatureEnabled("fakeTwo")).toBe(true);
@@ -485,9 +493,9 @@ describe("FeatureFlagsManager", () => {
       // Set a different state in cookies to test precedence
       const modifiedCookieValue = { feature1: true };
       mockFeatureFlagsCookie(modifiedCookieValue);
-      const serverFeatureFlagsManager = new FeatureFlagsManager(
-        MockServerCookiesModule(),
-      );
+      const serverFeatureFlagsManager = new FeatureFlagsManager({
+        cookies: MockServerCookiesModule(),
+      });
 
       // Now provide searchParams with a conflicting setup
       const searchParams = {
