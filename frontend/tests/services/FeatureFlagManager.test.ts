@@ -50,7 +50,10 @@ describe("FeatureFlagsManager", () => {
     // Mock default feature flags to allow for tests to be independent of actual default values
     mockDefaultFeatureFlags(DEFAULT_FEATURE_FLAGS);
 
-    featureFlagsManager = new FeatureFlagsManager({ cookies: Cookies });
+    featureFlagsManager = new FeatureFlagsManager({
+      envVarFlags: {},
+      cookies: Cookies,
+    });
   });
 
   test("`.featureFlagsCookie` getter loads feature flags with client-side js-cookies", () => {
@@ -59,6 +62,7 @@ describe("FeatureFlagsManager", () => {
 
   test('`.featureFlagsCookie` getter loads feature flags with server-side NextRequest["cookies"]', () => {
     const serverFeatureFlagsManager = new FeatureFlagsManager({
+      envVarFlags: {},
       cookies: MockServerCookiesModule(),
     });
     expect(serverFeatureFlagsManager.featureFlagsCookie).toEqual(COOKIE_VALUE);
@@ -70,6 +74,7 @@ describe("FeatureFlagsManager", () => {
       _ff: JSON.stringify(COOKIE_VALUE),
     };
     const serverFeatureFlagsManager = new FeatureFlagsManager({
+      envVarFlags: {},
       cookies: cookieRecord,
     });
     expect(serverFeatureFlagsManager.featureFlagsCookie).toEqual(COOKIE_VALUE);
@@ -411,6 +416,7 @@ describe("FeatureFlagsManager", () => {
     test("correctly initializes from ReadonlyRequestCookies", () => {
       const readonlyCookies = readonlyCookiesExample;
       const featureFlagsManager = new FeatureFlagsManager({
+        envVarFlags: {},
         cookies: readonlyCookies,
       });
 
@@ -424,6 +430,7 @@ describe("FeatureFlagsManager", () => {
       };
 
       const featureFlagsManager = new FeatureFlagsManager({
+        envVarFlags: {},
         cookies: invalidFlagCookies,
       });
 
@@ -431,26 +438,6 @@ describe("FeatureFlagsManager", () => {
       expect(() =>
         featureFlagsManager.isFeatureEnabled("invalidFeature"),
       ).toThrow();
-    });
-    describe("featureFlagsFromEnvironment", () => {
-      // notice the interaction between the values in the test and the values in the
-      // mocked environment at the top of the file
-      it("sets any env vars fitting `FEATURE_<varname>` pattern into snake case", () => {
-        mockDefaultFeatureFlags({
-          fakeOne: false,
-          fakeTwo: true,
-          nonBool: true,
-        });
-
-        const featureFlagsManager = new FeatureFlagsManager({
-          cookies: Cookies,
-        });
-        expect(featureFlagsManager.featureFlagsFromEnvironment).toEqual({
-          fakeOne: true,
-          fakeTwo: false,
-          nonBool: false,
-        });
-      });
     });
   });
   describe("feature flag precedence", () => {
@@ -463,6 +450,7 @@ describe("FeatureFlagsManager", () => {
       const modifiedCookieValue = {};
       mockFeatureFlagsCookie(modifiedCookieValue);
       const serverFeatureFlagsManager = new FeatureFlagsManager({
+        envVarFlags: { fakeOne: true, fakeTwo: false },
         cookies: MockServerCookiesModule(),
       });
 
@@ -482,6 +470,7 @@ describe("FeatureFlagsManager", () => {
       };
       mockFeatureFlagsCookie(modifiedCookieValue);
       const serverFeatureFlagsManager = new FeatureFlagsManager({
+        envVarFlags: {},
         cookies: MockServerCookiesModule(modifiedCookieValue),
       });
 
@@ -494,6 +483,7 @@ describe("FeatureFlagsManager", () => {
       const modifiedCookieValue = { feature1: true };
       mockFeatureFlagsCookie(modifiedCookieValue);
       const serverFeatureFlagsManager = new FeatureFlagsManager({
+        envVarFlags: {},
         cookies: MockServerCookiesModule(),
       });
 

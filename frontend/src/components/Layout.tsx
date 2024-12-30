@@ -36,7 +36,7 @@ export default function Layout({ children, locale }: Props) {
         locale={locale}
         messages={pick(messages, "Header")}
       >
-        <FeatureFlagProvider serverSideFlags={featureFlags}>
+        <FeatureFlagProvider envVarFlags={featureFlags}>
           <Header locale={locale} />
         </FeatureFlagProvider>
       </NextIntlClientProvider>

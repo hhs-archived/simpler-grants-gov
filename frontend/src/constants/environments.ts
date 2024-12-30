@@ -21,6 +21,9 @@ const {
 console.log("!!! from env", FEATURE_AUTH_OFF);
 // console.log("!!! from public env", process.env.NEXT_PUBLIC_FEATURE_AUTH_OFF);÷
 
+// by convention all feature flag env var names start with "FEATURE"
+// and all app side feature flag names should be in the camel case version of the env var names (minus FEATURE)
+// ex "FEATURE_SEARCH_OFF" -> "searchOff"
 export const featureFlags = {
   opportunityOff: stringToBoolean(FEATURE_OPPORTUNITY_OFF),
   searchOff: stringToBoolean(FEATURE_SEARCH_OFF),

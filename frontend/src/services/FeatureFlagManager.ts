@@ -3,10 +3,8 @@
  */
 
 import { CookiesStatic } from "js-cookie";
-import { environment } from "src/constants/environments";
 import { featureFlags } from "src/constants/featureFlags";
 import { ServerSideSearchParams } from "src/types/searchRequestURLTypes";
-import { camelToSnake, stringToBoolean } from "src/utils/generalUtils";
 
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 import { NextRequest, NextResponse } from "next/server";
@@ -46,6 +44,9 @@ export type NextServerSideCookies = Partial<{
  *     // Do something
  *   }
  *   ```
+ *
+ *  The FeatureFlagProvider also allows you access current feature flag status. See header
+ *  code for an example.
  */
 export class FeatureFlagsManager {
   static FEATURE_FLAGS_KEY = "_ff";
@@ -56,21 +57,23 @@ export class FeatureFlagsManager {
 
   private _cookies;
 
-  private _envVarOverrides;
+  // pass in env var values at instantiation, as these won't change during runtime
+  // this supports easier integration of the class on the client side, as server side flags can be passed down
+  private _envVarFlags;
 
   constructor({
     cookies,
-    serverSideFlags,
+    envVarFlags,
   }: {
     cookies?:
       | NextRequest["cookies"]
       | CookiesStatic
       | NextServerSideCookies
       | ReadonlyRequestCookies;
-    serverSideFlags?: FeatureFlags;
+    envVarFlags: FeatureFlags;
   }) {
     this._cookies = cookies;
-    this._envVarOverrides = serverSideFlags;
+    this._envVarFlags = envVarFlags;
   }
 
   get defaultFeatureFlags(): FeatureFlags {
@@ -127,6 +130,10 @@ export class FeatureFlagsManager {
         return this.isValidFeatureFlag(name) && typeof enabled === "boolean";
       }),
     );
+  }
+
+  get featureFlagsFromEnvironment(): FeatureFlags {
+    return { ...this._envVarFlags };
   }
 
   /*
@@ -212,31 +219,30 @@ export class FeatureFlagsManager {
     return response;
   }
 
-  get featureFlagsFromEnvironment() {
-    // eslint-disable-next-line
-    console.log("$$$ in manager", this._envVarOverrides);
-    if (this._envVarOverrides) {
-      return this._envVarOverrides;
-    }
-    return Object.keys(this.defaultFeatureFlags).reduce(
-      (featureFlagsFromEnvironment, flagName) => {
-        // by convention all feature flag env var names start with "FEATURE"
-        // and all app side feature flag names should be in the camel case version of the env var names (minus FEATURE)
-        // ex "FEATURE_SEARCH_OFF" -> "searchOff"
-        const envVarName = `FEATURE_${camelToSnake(flagName).toUpperCase()}`;
-        const envVarValue = environment[envVarName];
-        // eslint-disable-next-line
-        // console.log("!!! checking env var", envVarName, envVarValue);
-        if (envVarValue)
-          // by convention, any feature flag environment variables should use the exact string "true"
-          // when activating the flag. Negative values are more forgiving, but should be non empty strings
-          featureFlagsFromEnvironment[flagName] = stringToBoolean(envVarValue);
+  // get featureFlagsFromEnvironment() {
+  //   // when overrides from the server side have been passed in to the client side, use those instead
+  //   if (this._envVarFlags) {
+  //     return this._envVarFlags;
+  //   }
+  //   return Object.keys(this.defaultFeatureFlags).reduce(
+  //     (featureFlagsFromEnvironment, flagName) => {
+  //       // by convention all feature flag env var names start with "FEATURE"
+  //       // and all app side feature flag names should be in the camel case version of the env var names (minus FEATURE)
+  //       // ex "FEATURE_SEARCH_OFF" -> "searchOff"
+  //       const envVarName = `FEATURE_${camelToSnake(flagName).toUpperCase()}`;
+  //       const envVarValue = environment[envVarName];
+  //       // eslint-disable-next-line
+  //       // console.log("!!! checking env var", envVarName, envVarValue);
+  //       if (envVarValue)
+  //         // by convention, any feature flag environment variables should use the exact string "true"
+  //         // when activating the flag. Negative values are more forgiving, but should be non empty strings
+  //         featureFlagsFromEnvironment[flagName] = stringToBoolean(envVarValue);
 
-        return featureFlagsFromEnvironment;
-      },
-      {} as FeatureFlags,
-    );
-  }
+  //       return featureFlagsFromEnvironment;
+  //     },
+  //     {} as FeatureFlags,
+  //   );
+  // }
 
   /**
    * Parses feature flags from a query param string
