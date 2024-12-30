@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { featureFlags } from "src/constants/environments";
 import { FeatureFlagsManager } from "src/services/FeatureFlagManager";
 import { FeatureFlagContext } from "src/services/featureFlags/FeatureFlagProvider";
 
@@ -46,7 +47,7 @@ export function useFeatureFlags() {
   function setFeatureFlag(name: string, value: boolean) {
     featureFlagsManager.setFeatureFlagCookie(name, value);
     setFeatureFlagsManager(
-      new FeatureFlagsManager({ cookies: Cookies, envVarFlags }),
+      new FeatureFlagsManager({ cookies: Cookies, envVarFlags: featureFlags }),
     );
   }
 
