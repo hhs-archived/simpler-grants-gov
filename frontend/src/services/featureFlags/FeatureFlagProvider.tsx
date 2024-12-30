@@ -1,6 +1,5 @@
 "use client";
 
-import { useFeatureFlags } from "src/hooks/useFeatureFlags";
 import { FeatureFlags } from "src/services/FeatureFlagManager";
 
 import { createContext } from "react";
@@ -14,10 +13,9 @@ export default function FeatureFlagProvider({
   children: React.ReactNode;
   envVarFlags: FeatureFlags;
 }) {
-  const { featureFlagsManager } = useFeatureFlags(envVarFlags);
-
+  console.log("$$$ in provider", envVarFlags);
   return (
-    <FeatureFlagContext.Provider value={featureFlagsManager.featureFlags}>
+    <FeatureFlagContext.Provider value={envVarFlags}>
       {children}
     </FeatureFlagContext.Provider>
   );

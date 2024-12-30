@@ -1,13 +1,13 @@
 "use client";
 
 import clsx from "clsx";
-import { FeatureFlagContext } from "src/services/featureFlags/FeatureFlagProvider";
+import { useFeatureFlags } from "src/hooks/useFeatureFlags";
 import { assetPath } from "src/utils/assetPath";
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   GovBanner,
   NavMenuButton,
@@ -155,10 +155,11 @@ const Header = ({ logoPath, locale }: Props) => {
     };
   }, [isMobileNavExpanded, closeMenuOnEscape]);
 
-  const featureFlags = useContext(FeatureFlagContext);
+  // const featureFlags = useContext(FeatureFlagContext)
+  const { currentFeatureFlags } = useFeatureFlags();
   // eslint-disable-next-line
-  console.log("$$$$ in header", featureFlags);
-  const hideLoginLink = !!featureFlags.authOff;
+  console.log("$$$$ in header", currentFeatureFlags);
+  const hideLoginLink = !!currentFeatureFlags.authOff;
 
   // const { featureFlagsManager } = useFeatureFlags();
 

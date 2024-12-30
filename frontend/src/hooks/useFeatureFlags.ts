@@ -1,7 +1,8 @@
 import Cookies from "js-cookie";
 import { FeatureFlagsManager } from "src/services/FeatureFlagManager";
+import { FeatureFlagContext } from "src/services/featureFlags/FeatureFlagProvider";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 /**
  * React hook for reading and managing feature flags in client-side code.
@@ -29,7 +30,10 @@ import { useEffect, useState } from "react";
  * }
  * ```
  */
-export function useFeatureFlags(envVarFlags = {}) {
+export function useFeatureFlags() {
+  const envVarFlags = useContext(FeatureFlagContext);
+  // eslint-disable-next-line
+  console.log("$$$ in hook", envVarFlags);
   const [featureFlagsManager, setFeatureFlagsManager] = useState(
     new FeatureFlagsManager({ cookies: Cookies, envVarFlags }),
   );
@@ -46,5 +50,10 @@ export function useFeatureFlags(envVarFlags = {}) {
     );
   }
 
-  return { featureFlagsManager, mounted, setFeatureFlag };
+  return {
+    featureFlagsManager,
+    mounted,
+    setFeatureFlag,
+    currentFeatureFlags: featureFlagsManager.featureFlags,
+  };
 }

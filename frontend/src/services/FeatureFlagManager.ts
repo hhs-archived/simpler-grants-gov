@@ -45,8 +45,6 @@ export type NextServerSideCookies = Partial<{
  *   }
  *   ```
  *
- *  The FeatureFlagProvider also allows you access current feature flag status. See header
- *  code for an example.
  */
 export class FeatureFlagsManager {
   static FEATURE_FLAGS_KEY = "_ff";
@@ -80,13 +78,29 @@ export class FeatureFlagsManager {
     return { ...this._defaultFeatureFlags };
   }
 
-  // The SSR function getServerSideProps provides a Record type for cookie, which excludes
-  // cookie methods like set or get.
-  // likely should be moved out of this class
-  private isCookieARecord(
-    cookies?: typeof this._cookies | NextResponse["cookies"],
-  ): cookies is NextServerSideCookies {
-    return !(cookies && "get" in cookies && typeof cookies.get === "function");
+  get featureFlagsFromEnvironment(): FeatureFlags {
+    return { ...this._envVarFlags };
+  }
+
+  /*
+
+    - Flags set by environment variables are the first override to default values
+    - Flags set in the /dev/feature-flags admin view will be set in the cookie
+    - Flags set in query params will result in the flag value being stored in the cookie
+    - As query param values are set in middleware on each request, query params have the highest precedence
+    - Values set in cookies will be persistent per browser session unless explicitly overwritten
+    - This means that simply removing a query param from a url will not revert the feature flag value to
+    the value specified in environment variable or default, you'll need to clear cookies or open a new private browser
+
+  */
+  get featureFlags(): FeatureFlags {
+    // eslint-disable-next-line
+    console.log("$$$ in manager", this.featureFlagsFromEnvironment);
+    return {
+      ...this.defaultFeatureFlags,
+      ...this.featureFlagsFromEnvironment,
+      ...this.featureFlagsCookie,
+    };
   }
 
   /**
@@ -130,29 +144,6 @@ export class FeatureFlagsManager {
         return this.isValidFeatureFlag(name) && typeof enabled === "boolean";
       }),
     );
-  }
-
-  get featureFlagsFromEnvironment(): FeatureFlags {
-    return { ...this._envVarFlags };
-  }
-
-  /*
-
-    - Flags set by environment variables are the first override to default values
-    - Flags set in the /dev/feature-flags admin view will be set in the cookie
-    - Flags set in query params will result in the flag value being stored in the cookie
-    - As query param values are set in middleware on each request, query params have the highest precedence
-    - Values set in cookies will be persistent per browser session unless explicitly overwritten
-    - This means that simply removing a query param from a url will not revert the feature flag value to
-    the value specified in environment variable or default, you'll need to clear cookies or open a new private browser
-
-  */
-  get featureFlags(): FeatureFlags {
-    return {
-      ...this.defaultFeatureFlags,
-      ...this.featureFlagsFromEnvironment,
-      ...this.featureFlagsCookie,
-    };
   }
 
   /**
@@ -218,31 +209,6 @@ export class FeatureFlagsManager {
     this.setCookie(JSON.stringify(this.featureFlagsCookie), response.cookies);
     return response;
   }
-
-  // get featureFlagsFromEnvironment() {
-  //   // when overrides from the server side have been passed in to the client side, use those instead
-  //   if (this._envVarFlags) {
-  //     return this._envVarFlags;
-  //   }
-  //   return Object.keys(this.defaultFeatureFlags).reduce(
-  //     (featureFlagsFromEnvironment, flagName) => {
-  //       // by convention all feature flag env var names start with "FEATURE"
-  //       // and all app side feature flag names should be in the camel case version of the env var names (minus FEATURE)
-  //       // ex "FEATURE_SEARCH_OFF" -> "searchOff"
-  //       const envVarName = `FEATURE_${camelToSnake(flagName).toUpperCase()}`;
-  //       const envVarValue = environment[envVarName];
-  //       // eslint-disable-next-line
-  //       // console.log("!!! checking env var", envVarName, envVarValue);
-  //       if (envVarValue)
-  //         // by convention, any feature flag environment variables should use the exact string "true"
-  //         // when activating the flag. Negative values are more forgiving, but should be non empty strings
-  //         featureFlagsFromEnvironment[flagName] = stringToBoolean(envVarValue);
-
-  //       return featureFlagsFromEnvironment;
-  //     },
-  //     {} as FeatureFlags,
-  //   );
-  // }
 
   /**
    * Parses feature flags from a query param string
@@ -324,5 +290,14 @@ export class FeatureFlagsManager {
         expires,
       });
     }
+  }
+
+  // The SSR function getServerSideProps provides a Record type for cookie, which excludes
+  // cookie methods like set or get.
+  // likely should be moved out of this class
+  private isCookieARecord(
+    cookies?: typeof this._cookies | NextResponse["cookies"],
+  ): cookies is NextServerSideCookies {
+    return !(cookies && "get" in cookies && typeof cookies.get === "function");
   }
 }
