@@ -97,3 +97,6 @@ export const camelToSnake = (camel: string) =>
 
 export const encodeText = (valueToEncode: string) =>
   new TextEncoder().encode(valueToEncode);
+
+export const stringToBoolean = (mightRepresentABoolean: string): boolean =>
+  mightRepresentABoolean === "true";

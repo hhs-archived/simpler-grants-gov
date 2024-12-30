@@ -1,3 +1,5 @@
+import { stringToBoolean } from "src/utils/generalUtils";
+
 const {
   NODE_ENV,
   NEXT_PUBLIC_BASE_PATH,
@@ -10,9 +12,20 @@ const {
   NEXT_PUBLIC_BASE_URL,
   FEATURE_SEARCH_OFF = "false",
   FEATURE_OPPORTUNITY_OFF = "false",
+  FEATURE_AUTH_OFF = "true",
   NEXT_BUILD = "false",
   SESSION_SECRET = "",
 } = process.env;
+
+// eslint-disable-next-line
+console.log("!!! from env", FEATURE_AUTH_OFF);
+// console.log("!!! from public env", process.env.NEXT_PUBLIC_FEATURE_AUTH_OFF);÷
+
+export const featureFlags = {
+  opportunityOff: stringToBoolean(FEATURE_OPPORTUNITY_OFF),
+  searchOff: stringToBoolean(FEATURE_SEARCH_OFF),
+  authOff: stringToBoolean(FEATURE_AUTH_OFF),
+};
 
 // home for all interpreted server side environment variables
 export const environment: { [key: string]: string } = {
@@ -31,6 +44,7 @@ export const environment: { [key: string]: string } = {
   GOOGLE_TAG_MANAGER_ID: "GTM-MV57HMHS",
   FEATURE_OPPORTUNITY_OFF,
   FEATURE_SEARCH_OFF,
+  FEATURE_AUTH_OFF,
   NEXT_BUILD,
   SESSION_SECRET,
 };

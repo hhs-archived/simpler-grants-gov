@@ -6,7 +6,7 @@ import { CookiesStatic } from "js-cookie";
 import { environment } from "src/constants/environments";
 import { featureFlags } from "src/constants/featureFlags";
 import { ServerSideSearchParams } from "src/types/searchRequestURLTypes";
-import { camelToSnake } from "src/utils/generalUtils";
+import { camelToSnake, stringToBoolean } from "src/utils/generalUtils";
 
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 import { NextRequest, NextResponse } from "next/server";
@@ -213,10 +213,12 @@ export class FeatureFlagsManager {
         // ex "FEATURE_SEARCH_OFF" -> "searchOff"
         const envVarName = `FEATURE_${camelToSnake(flagName).toUpperCase()}`;
         const envVarValue = environment[envVarName];
+        // eslint-disable-next-line
+        // console.log("!!! checking env var", envVarName, envVarValue);
         if (envVarValue)
           // by convention, any feature flag environment variables should use the exact string "true"
           // when activating the flag. Negative values are more forgiving, but should be non empty strings
-          featureFlagsFromEnvironment[flagName] = envVarValue === "true";
+          featureFlagsFromEnvironment[flagName] = stringToBoolean(envVarValue);
 
         return featureFlagsFromEnvironment;
       },

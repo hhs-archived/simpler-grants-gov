@@ -1,4 +1,6 @@
 import pick from "lodash/pick";
+import { featureFlags } from "src/constants/environments";
+import FeatureFlagProvider from "src/services/featureFlags/FeatureFlagProvider";
 
 import {
   NextIntlClientProvider,
@@ -7,9 +9,9 @@ import {
 } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 
-import Footer from "./Footer";
-import GrantsIdentifier from "./GrantsIdentifier";
-import Header from "./Header";
+import Footer from "src/components/Footer";
+import GrantsIdentifier from "src/components/GrantsIdentifier";
+import Header from "src/components/Header";
 
 type Props = {
   children: React.ReactNode;
@@ -32,7 +34,9 @@ export default function Layout({ children, locale }: Props) {
         locale={locale}
         messages={pick(messages, "Header")}
       >
-        <Header locale={locale} />
+        <FeatureFlagProvider serverSideFlags={featureFlags}>
+          <Header locale={locale} />
+        </FeatureFlagProvider>
       </NextIntlClientProvider>
       <main id="main-content">{children}</main>
       <Footer />
