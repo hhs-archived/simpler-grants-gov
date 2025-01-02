@@ -24,7 +24,7 @@ export const environment: { [key: string]: string } = {
   SENDY_API_URL: SENDY_API_URL || "",
   SENDY_API_KEY: SENDY_API_KEY || "",
   SENDY_LIST_ID: SENDY_LIST_ID || "",
-  API_URL: API_URL || "",
+  API_URL: API_URL || "subbed",
   API_AUTH_TOKEN,
   NEXT_PUBLIC_BASE_URL: NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
   GOOGLE_TAG_MANAGER_ID: "GTM-MV57HMHS",

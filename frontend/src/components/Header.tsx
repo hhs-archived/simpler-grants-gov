@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { environment } from "src/constants/environments";
 import {
   GovBanner,
   NavMenuButton,
@@ -118,6 +119,10 @@ const NavLinks = ({
 };
 
 const Header = ({ logoPath, locale }: Props) => {
+
+  const envar = process.env.NODE_ENV;
+  // const envs = process.env;
+//  console.warn(envs);
   const t = useTranslations("Header");
   const [isMobileNavExpanded, setIsMobileNavExpanded] =
     useState<boolean>(false);
@@ -189,6 +194,7 @@ const Header = ({ logoPath, locale }: Props) => {
           />
         </div>
       </USWDSHeader>
+      <h4>The current node env is: {envar}. The API URL is { environment.API_URL } or { process.env.API_URL } </h4>
     </>
   );
 };
