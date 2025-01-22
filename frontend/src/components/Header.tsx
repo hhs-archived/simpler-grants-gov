@@ -174,7 +174,7 @@ const Header = ({ locale }: Props) => {
                 <Link href="/" className="position-relative">
                   <Image
                     alt={t("title")}
-                    src={GrantsLogo as string}
+                    src={GrantsLogo}
                     className="height-4 display-block position-relative desktop:height-auto"
                     unoptimized
                     priority
