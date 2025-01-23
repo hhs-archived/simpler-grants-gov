@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import GrantsLogo from "public/img/grants-logo.png";
+import GrantsLogo from "public/img/grants-logo.svg";
 import { useFeatureFlags } from "src/hooks/useFeatureFlags";
 
 import { useTranslations } from "next-intl";
@@ -174,7 +174,7 @@ const Header = ({ locale }: Props) => {
                 <Link href="/" className="position-relative">
                   <Image
                     alt={t("title")}
-                    src={GrantsLogo}
+                    src={GrantsLogo as string}
                     className="height-4 display-block position-relative desktop:height-auto"
                     unoptimized
                     priority
