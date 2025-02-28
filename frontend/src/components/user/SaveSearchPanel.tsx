@@ -12,7 +12,7 @@ export const SaveSearchPanel = () => {
   const searchParams = useSearchParams();
   const query = searchParams?.toString() ? `?${searchParams.toString()}` : "";
   const url = `${environment.NEXT_PUBLIC_BASE_URL}${path}${query}`;
-  const t = useTranslations("Search.savedQuery");
+  const t = useTranslations("Search.saveSearch.copySearch");
   return (
     <div className="border-base-lighter border-1px padding-2 flex-align-start text-primary-darker text-underline display-flex">
       <SearchQueryCopyButton
