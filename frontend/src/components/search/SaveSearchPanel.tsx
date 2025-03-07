@@ -16,19 +16,27 @@ export function SaveSearchPanel() {
   const { user } = useUser();
   const path = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations("Search.saveSearch.copySearch");
+
   const url = useMemo(() => {
     const query = searchParams?.toString() ? `?${searchParams.toString()}` : "";
     return `${environment.NEXT_PUBLIC_BASE_URL}${path}${query}`;
   }, [searchParams, path]);
 
-  const t = useTranslations("Search.saveSearch.copySearch");
+  const copyText = useMemo(
+    () => (user?.token ? t("copy.authenticated") : t("copy.unauthenticated")),
+    [user?.token, t],
+  );
 
   return (
     <div className="border-base-lighter border-1px padding-2 flex-align-start text-primary-darker text-underline display-flex">
+      {checkFeatureFlag("savedSearchesOn") && user?.token && (
+        <SaveSearchModal />
+      )}
       <SearchQueryCopyButton
         copiedText={t("copied")}
         copyingText={t("copying")}
-        copyText={t("copy.unauthenticated")}
+        copyText={copyText}
         helpText={
           <div className="width-card-lg text-wrap">
             {t("help.unauthenticated")}
@@ -37,9 +45,6 @@ export function SaveSearchPanel() {
         url={url}
         snackbarMessage={t("snackbar")}
       />
-      {checkFeatureFlag("savedSearchesOn") && user?.token && (
-        <SaveSearchModal />
-      )}
     </div>
   );
 }
