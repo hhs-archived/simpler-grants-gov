@@ -6,7 +6,7 @@ import { useUser } from "src/services/auth/useUser";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { USWDSIcon } from "src/components/USWDSIcon";
 import { SaveSearchModal } from "./SaveSearchModal";
@@ -38,6 +38,8 @@ export function SaveSearchPanel() {
 
   const t = useTranslations("Search.saveSearch");
 
+  const [newSavedSearches, setNewSavedSearches] = useState<string[]>([]);
+
   const url = useMemo(() => {
     const query = searchParams?.toString() ? `?${searchParams.toString()}` : "";
     const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -57,10 +59,8 @@ export function SaveSearchPanel() {
     [user?.token, checkFeatureFlag],
   );
 
-  const handleSavedSearchSelect = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    console.log("!!! selected", event?.target?.value);
+  const onNewSavedSearch = (id: string) => {
+    setNewSavedSearches([id, ...newSavedSearches]);
   };
 
   return (
@@ -71,11 +71,11 @@ export function SaveSearchPanel() {
             <span className="text-bold">{t("heading")}</span>
             <SaveSearchTooltip text={t("help.noSavedQueries")} />
           </div>
-          <SavedSearchSelector handleSelected={handleSavedSearchSelect} />
+          <SavedSearchSelector newSavedSearches={newSavedSearches} />
         </>
       )}
       <div className="display-flex flex-align-start text-underline">
-        {showSavedSearchUI && <SaveSearchModal />}
+        {showSavedSearchUI && <SaveSearchModal onSave={onNewSavedSearch} />}
         <SearchQueryCopyButton
           copiedText={t("copySearch.copied")}
           copyingText={t("copySearch.copying")}
