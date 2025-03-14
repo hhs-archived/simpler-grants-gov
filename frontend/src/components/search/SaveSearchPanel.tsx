@@ -23,6 +23,7 @@ const SaveSearchTooltip = ({ text }: { text: string }) => {
       className="margin-left-1 usa-button--unstyled"
       label={<div className="width-card-lg text-wrap">{text}</div>}
       position="top"
+      title={"Save search tooltip"}
     >
       <USWDSIcon className="text-secondary-darker" name="info_outline" />
     </TooltipWrapper>
