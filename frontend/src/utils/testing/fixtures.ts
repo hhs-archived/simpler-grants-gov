@@ -3,6 +3,7 @@ import {
   PaginationSortDirection,
   QueryParamData,
   SearchFetcherActionType,
+  ValidSearchQueryParamData,
 } from "src/types/search/searchRequestTypes";
 import { Opportunity } from "src/types/search/searchResponseTypes";
 
@@ -57,4 +58,15 @@ export const fakeSavedSearch = {
   filters: fakeSearchFilterRequestBody,
   pagination: arbitrarySearchPagination,
   query: "something to search for",
+};
+
+export const fakeSearchQueryParamData: ValidSearchQueryParamData = {
+  query: "search term",
+  status: "forecasted,closed",
+  fundingInstrument: "Cooperative Agreement",
+  eligibility: "Individuals",
+  agency: "Economic Development Administration",
+  category: "Recovery Act",
+  page: "1",
+  sortby: "relevancy",
 };
