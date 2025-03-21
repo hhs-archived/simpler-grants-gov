@@ -73,26 +73,18 @@ async function Search({ searchParams, params }: SearchPageProps) {
                 type="centered"
               >
                 <SaveSearchPanel />
-                <Suspense
-                  fallback={
-                    <SearchFiltersSkeleton
-                      opportunityStatus={status}
-                      eligibility={eligibility}
-                      category={category}
-                      fundingInstrument={fundingInstrument}
-                      agency={agency}
-                    />
-                  }
-                >
-                  <SearchFilters
-                    opportunityStatus={status}
-                    eligibility={eligibility}
-                    category={category}
-                    fundingInstrument={fundingInstrument}
-                    agency={agency}
-                    searchResultsPromise={searchResultsPromise}
-                  />
-                </Suspense>
+                {/* <Suspense
+                  fallback={<div>non-interactive-fallback</div>}
+                > */}
+                <SearchFilters
+                  opportunityStatus={status}
+                  eligibility={eligibility}
+                  category={category}
+                  fundingInstrument={fundingInstrument}
+                  agency={agency}
+                  searchResultsPromise={searchResultsPromise}
+                />
+                {/* </Suspense> */}
               </ContentDisplayToggle>
             </div>
             <div className="tablet:grid-col-8">

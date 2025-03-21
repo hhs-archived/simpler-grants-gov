@@ -8,7 +8,7 @@ import {
   ValidSearchQueryParam,
 } from "src/types/search/searchResponseTypes";
 
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { Accordion } from "@trussworks/react-uswds";
 
 import SearchFilterCheckbox from "src/components/search/SearchFilterAccordion/SearchFilterCheckbox";
@@ -37,7 +37,7 @@ export interface SearchFilterAccordionProps {
   queryParamKey: ValidSearchQueryParam; // Ex - In query params, search?{key}=first,second,third
   title: string; // Title in header of accordion
   filterOptions: FilterOption[];
-  facetCounts: { [key: string]: number };
+  facetCounts?: { [key: string]: number };
 }
 
 export interface FilterOptionWithChildren {
@@ -62,18 +62,40 @@ const isSectionNoneSelected = (query: Set<string>): boolean => {
 const areSetsEqual = (a: Set<string>, b: Set<string>) =>
   a.size === b.size && [...a].every((value) => b.has(value));
 
-export function SearchFilterAccordion({
+const AccordionTitle = ({
+  title,
+  totalCheckedCount,
+}: {
+  title: string;
+  totalCheckedCount: number;
+}) => {
+  return (
+    <>
+      {title}
+      {!!totalCheckedCount && (
+        <span className="usa-tag usa-tag--big radius-pill margin-left-1">
+          {totalCheckedCount}
+        </span>
+      )}
+    </>
+  );
+};
+
+const AccordionContent = ({
   filterOptions,
   title,
   queryParamKey,
   query,
-  facetCounts,
-}: SearchFilterAccordionProps) {
-  console.log("~~ !!! faceCounts", facetCounts);
+}: SearchFilterAccordionProps) => {
   const { queryTerm } = useContext(QueryContext);
   const { updateQueryParams, searchParams } = useSearchParamUpdater();
 
-  const totalCheckedCount = query.size;
+  const toggleOptionChecked = (value: string, isChecked: boolean) => {
+    const updated = new Set(query);
+    isChecked ? updated.add(value) : updated.delete(value);
+    updateQueryParams(updated, queryParamKey, queryTerm);
+  };
+
   // all top level selectable filter options
   const allOptionValues = filterOptions.reduce((values: string[], option) => {
     if (option.children) {
@@ -84,18 +106,6 @@ export function SearchFilterAccordion({
   }, []);
 
   const allSelected = new Set(allOptionValues);
-
-  // SPLIT ME INTO MY OWN COMPONENT
-  const getAccordionTitle = () => (
-    <>
-      {title}
-      {!!totalCheckedCount && (
-        <span className="usa-tag usa-tag--big radius-pill margin-left-1">
-          {totalCheckedCount}
-        </span>
-      )}
-    </>
-  );
 
   // need to add any existing relevant search params to the passed in set
   const toggleSelectAll = (all: boolean, newSelections?: Set<string>): void => {
@@ -116,16 +126,7 @@ export function SearchFilterAccordion({
     }
   };
 
-  const toggleOptionChecked = (value: string, isChecked: boolean) => {
-    const updated = new Set(query);
-    isChecked ? updated.add(value) : updated.delete(value);
-    updateQueryParams(updated, queryParamKey, queryTerm);
-  };
-
-  const isExpanded = !!query.size;
-
-  // SPLIT ME INTO MY OWN COMPONENT
-  const getAccordionContent = () => (
+  return (
     <>
       <SearchFilterToggleAll
         onSelectAll={() => toggleSelectAll(true, allSelected)}
@@ -163,12 +164,51 @@ export function SearchFilterAccordion({
       </ul>
     </>
   );
+};
+
+export function SearchFilterAccordion({
+  filterOptions,
+  title,
+  queryParamKey,
+  query,
+}: SearchFilterAccordionProps) {
+  const totalCheckedCount = query.size;
+
+  // // need to add any existing relevant search params to the passed in set
+  // const toggleSelectAll = (all: boolean, newSelections?: Set<string>): void => {
+  //   if (all && newSelections) {
+  //     // get existing current selected options for this accordion from url
+  //     const currentSelections = new Set(
+  //       searchParams.get(camelCase(title))?.split(","),
+  //     );
+  //     // add existing to newly selected section
+  //     const sectionPlusCurrent = new Set([
+  //       ...currentSelections,
+  //       ...newSelections,
+  //     ]);
+  //     updateQueryParams(sectionPlusCurrent, queryParamKey, queryTerm);
+  //   } else {
+  //     const clearedSelections = newSelections || new Set<string>();
+  //     updateQueryParams(clearedSelections, queryParamKey, queryTerm);
+  //   }
+  // };
+
+  const isExpanded = !!query.size;
 
   // MEMOIZE ME
   const accordionOptions: AccordionItemProps[] = [
     {
-      title: getAccordionTitle(),
-      content: getAccordionContent(),
+      title: (
+        <AccordionTitle title={title} totalCheckedCount={totalCheckedCount} />
+      ),
+      content: (
+        <AccordionContent
+          filterOptions={filterOptions}
+          title={title}
+          queryParamKey={queryParamKey}
+          query={query}
+        />
+      ),
       expanded: isExpanded,
       id: `opportunity-filter-${queryParamKey as string}`,
       headingLevel: "h2",
@@ -177,7 +217,6 @@ export function SearchFilterAccordion({
 
   return (
     <Accordion
-      onClick={() => console.log("i hear you")}
       bordered={true}
       items={accordionOptions}
       multiselectable={true}
