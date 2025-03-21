@@ -2,21 +2,24 @@ import { Metadata } from "next";
 import QueryProvider from "src/app/[locale]/search/QueryProvider";
 import { environment } from "src/constants/environments";
 import withFeatureFlag from "src/hoc/withFeatureFlag";
+import { searchForOpportunities } from "src/services/fetch/fetchers/searchFetcher";
 import { OptionalStringDict } from "src/types/generalTypes";
 import { LocalizedPageProps } from "src/types/intl";
 import { Breakpoints } from "src/types/uiTypes";
 import { convertSearchParamsToProperTypes } from "src/utils/search/convertSearchParamsToProperTypes";
 
-import { useTranslations } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { redirect } from "next/navigation";
-import { use } from "react";
+import { Suspense, use } from "react";
 
 import ContentDisplayToggle from "src/components/ContentDisplayToggle";
 import { SaveSearchPanel } from "src/components/search/SaveSearchPanel";
 import SearchAnalytics from "src/components/search/SearchAnalytics";
 import SearchBar from "src/components/search/SearchBar";
-import SearchFilters from "src/components/search/SearchFilters";
+import {
+  SearchFilters,
+  SearchFiltersSkeleton,
+} from "src/components/search/SearchFilters";
 import SearchResults from "src/components/search/SearchResults";
 
 export async function generateMetadata({ params }: LocalizedPageProps) {
@@ -33,11 +36,11 @@ type SearchPageProps = {
   params: Promise<{ locale: string }>;
 };
 
-function Search({ searchParams, params }: SearchPageProps) {
-  const { locale } = use(params);
-  const resolvedSearchParams = use(searchParams);
+async function Search({ searchParams, params }: SearchPageProps) {
+  const { locale } = await params;
+  const resolvedSearchParams = await searchParams;
   setRequestLocale(locale);
-  const t = useTranslations("Search");
+  const t = await getTranslations("Search");
 
   const convertedSearchParams =
     convertSearchParamsToProperTypes(resolvedSearchParams);
@@ -47,6 +50,8 @@ function Search({ searchParams, params }: SearchPageProps) {
   if (!("page" in resolvedSearchParams)) {
     resolvedSearchParams.page = "1";
   }
+
+  const searchResultsPromise = searchForOpportunities(convertedSearchParams);
 
   return (
     <>
@@ -68,13 +73,26 @@ function Search({ searchParams, params }: SearchPageProps) {
                 type="centered"
               >
                 <SaveSearchPanel />
-                <SearchFilters
-                  opportunityStatus={status}
-                  eligibility={eligibility}
-                  category={category}
-                  fundingInstrument={fundingInstrument}
-                  agency={agency}
-                />
+                <Suspense
+                  fallback={
+                    <SearchFiltersSkeleton
+                      opportunityStatus={status}
+                      eligibility={eligibility}
+                      category={category}
+                      fundingInstrument={fundingInstrument}
+                      agency={agency}
+                    />
+                  }
+                >
+                  <SearchFilters
+                    opportunityStatus={status}
+                    eligibility={eligibility}
+                    category={category}
+                    fundingInstrument={fundingInstrument}
+                    agency={agency}
+                    searchResultsPromise={searchResultsPromise}
+                  />
+                </Suspense>
               </ContentDisplayToggle>
             </div>
             <div className="tablet:grid-col-8">
@@ -82,6 +100,7 @@ function Search({ searchParams, params }: SearchPageProps) {
                 searchParams={convertedSearchParams}
                 query={query}
                 loadingMessage={t("loading")}
+                searchResultsPromise={searchResultsPromise}
               ></SearchResults>
             </div>
           </div>

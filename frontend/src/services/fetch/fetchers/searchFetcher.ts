@@ -6,6 +6,9 @@ import { SearchAPIResponse } from "src/types/search/searchResponseTypes";
 import { formatSearchRequestBody } from "src/utils/search/searchFormatUtils";
 
 export const searchForOpportunities = async (searchInputs: QueryParamData) => {
+  await new Promise((resolve) =>
+    setTimeout(resolve, Math.round(Math.random() * 10000)),
+  );
   const requestBody = formatSearchRequestBody(searchInputs);
   const response = await fetchOpportunitySearch({
     body: requestBody,

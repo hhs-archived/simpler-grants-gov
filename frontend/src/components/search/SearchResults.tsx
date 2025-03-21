@@ -23,6 +23,7 @@ const SearchResultsSkeleton = ({
   query?: string | null;
   loadingMessage: string;
 }) => {
+  console.log("~~ *** search results skeleton");
   return (
     <>
       <SearchResultsHeader sortby={sortby} />
@@ -48,6 +49,7 @@ const ResolvedSearchResults = async ({
   query?: string | null;
   searchResultsPromise: Promise<SearchAPIResponse>;
 }) => {
+  console.log("~~ %%% search results");
   let searchResults: SearchAPIResponse;
 
   try {
@@ -109,13 +111,14 @@ export default function SearchResults({
   searchParams,
   query,
   loadingMessage,
+  searchResultsPromise,
 }: {
   searchParams: QueryParamData;
   query?: string | null;
   loadingMessage: string;
+  searchResultsPromise: Promise<SearchAPIResponse>;
 }) {
   const { page, sortby } = searchParams;
-  const searchResultsPromise = searchForOpportunities(searchParams);
   const suspenseKey = Object.entries(searchParams).join(",");
 
   return (

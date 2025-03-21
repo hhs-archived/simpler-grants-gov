@@ -3,7 +3,10 @@
 import { camelCase } from "lodash";
 import { QueryContext } from "src/app/[locale]/search/QueryProvider";
 import { useSearchParamUpdater } from "src/hooks/useSearchParamUpdater";
-import { ValidSearchQueryParam } from "src/types/search/searchResponseTypes";
+import {
+  FacetCounts,
+  ValidSearchQueryParam,
+} from "src/types/search/searchResponseTypes";
 
 import { useContext } from "react";
 import { Accordion } from "@trussworks/react-uswds";
@@ -34,6 +37,7 @@ export interface SearchFilterAccordionProps {
   queryParamKey: ValidSearchQueryParam; // Ex - In query params, search?{key}=first,second,third
   title: string; // Title in header of accordion
   filterOptions: FilterOption[];
+  facetCounts: { [key: string]: number };
 }
 
 export interface FilterOptionWithChildren {
@@ -63,7 +67,9 @@ export function SearchFilterAccordion({
   title,
   queryParamKey,
   query,
+  facetCounts,
 }: SearchFilterAccordionProps) {
+  console.log("~~ !!! faceCounts", facetCounts);
   const { queryTerm } = useContext(QueryContext);
   const { updateQueryParams, searchParams } = useSearchParamUpdater();
 
@@ -171,6 +177,7 @@ export function SearchFilterAccordion({
 
   return (
     <Accordion
+      onClick={() => console.log("i hear you")}
       bordered={true}
       items={accordionOptions}
       multiselectable={true}

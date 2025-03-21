@@ -89,6 +89,9 @@ export const getAgenciesForFilterOptions = async (
   prefetchedOptions?: FilterOption[],
 ): Promise<FilterOption[]> => {
   try {
+    await new Promise((resolve) =>
+      setTimeout(resolve, Math.round(Math.random() * 10000)),
+    );
     if (prefetchedOptions) {
       return Promise.resolve(prefetchedOptions);
     }
