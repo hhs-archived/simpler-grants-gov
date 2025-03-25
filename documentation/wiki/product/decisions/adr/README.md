@@ -50,3 +50,4 @@ The following list links to all of the ADRs we've adopted:
 * [Adding Slack Users to SimplerGrants Slack Workspace](2024-12-17-adding-slack-users.md)
 * [Repository organization](2025-01-02-repo-organization.md)
 * [Dedicated Forum for Simpler.Grants.gov Community](2025-02-25-dedicated-forum.md)
+* [Migrate Existing API Consumers](2025-03-24-migrate-existing-api-consumers.md)
