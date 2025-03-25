@@ -78,6 +78,7 @@ test.describe("Search page tests", () => {
       "status",
       "forecasted,posted",
     );
+
     await clickAccordionWithTitle(page, "Funding instrument");
     await toggleCheckboxes(
       page,
@@ -144,6 +145,7 @@ test.describe("Search page tests", () => {
       await toggleMobileSearchFilters(page);
     }
 
+    await clickAccordionWithTitle(page, "Opportunity status");
     await toggleCheckboxes(page, statusCheckboxes, "status");
 
     // Wait for the page to reload
@@ -208,6 +210,7 @@ test.describe("Search page tests", () => {
       await toggleMobileSearchFilters(page);
     }
 
+    await clickAccordionWithTitle(page, "Opportunity status");
     await toggleCheckboxes(page, statusCheckboxes, "status");
 
     const updatedSearchResultsCount =
