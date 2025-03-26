@@ -8,7 +8,7 @@
 
 ## Context and Problem Statement
 
-We have a large existing S2S API client base located in two primary cohorts:
+We have a large existing S2S API client base split into two primary cohorts:
 
 1. Other Federal Government Agencies - Grantors, USASpending, etc.
 2. Applicants (data suggests this is primarily Universities, Hospital/Healthcare Groups, State/County/Local Governments)
@@ -28,19 +28,22 @@ But the fundamental question is, how do we support existing SOAP consumers long 
 
 ## Decision Drivers
 
-- Ease of migration for consumers
+- Ease of migration for SOAP consumers
 - Minimize impact of supporting the legacy system on new work/innovation
 - Ease of support for technical team
+- Data must appear unified behind a single API call for both SOAP and REST calls (for data that will exist in Simpler)
+  - To avoid breaking existing workflows before they can move off SOAP, and to support consumers moving to REST while still needing historical data.
 
 ## Options Considered
 
-- {option 1}
-- {option 2}
-- ...
+- REST wrapper around existing grants.gov SOAP API
+- SOAP wrapper around Simpler REST API
+- Only support existing SOAP API
+- Do nothing to help SOAP consumers
 
 ## Decision Outcome
 
-Chosen option: "{option 1}", because {justification. e.g., only option which meets a key decision driver | which satisfies x condition | ... }.
+Chosen option: "SOAP wrapper around Simpler REST API", because it provides the best support for existing SOAP consumers without limiting new REST API and other system design of Simpler.
 
 ### Positive Consequences
 
@@ -54,29 +57,51 @@ Chosen option: "{option 1}", because {justification. e.g., only option which mee
 
 ## Pros and Cons of the Options
 
-### {option 1}
+### REST wrapper around existing grants.gov SOAP API
 
 {example | description | pointer to more information | ...}
 
 - **Pros**
-  - Good, because {argument a}
-  - Good, because {argument b}
-  - ...
-- **Cons**
-  - Bad, because {argument c}
-  - ...
 
-### {option 2}
+  - Good, because {argument a}
+
+- **Cons**
+
+  - Would require defining our entire REST API schema up-front or require a second migration later for consumers
+  - Limits new
+
+### SOAP Wrapper around Simpler REST API
 
 {example | description | pointer to more information | ...}
 
 - **Pros**
+
   - Good, because {argument a}
-  - Good, because {argument b}
-  - ...
+
 - **Cons**
+
   - Bad, because {argument c}
-  - ...
+
+### Only support existing SOAP API
+
+Modernize under the hood but continue to support the existing SOAP API schemas/footprint as our Simpler API
+
+- **Pros**
+  - Consumers don't have to change anything to pick up new API integration
+- **Cons**
+  - Severely limits modernization/innovation efforts
+  - Provides no way to adjust workflow or process deficiencies given we need to support the existing way things work.
+
+### Do nothing to help SOAP consumers
+
+Let the SOAP API languish while more and more data and API functionality shifts to the REST API until the point that new data will only appear in the REST API and the SOAP API will be a dead end.
+
+- **Pros**
+  - No extra technical work
+- **Cons**
+  - Consumers control which API they pull data from but not which API gets applications so this would lead to confusion and data being lost/missed.
+  - Before REST work is complete the REST API has a degraded experience, requiring parallel implementations of REST/SOAP.
+  - After REST work is complete the SOAP API has a degraded experience, giving a very short runway for cutting over from SOAP to REST.
 
 ## Links
 
