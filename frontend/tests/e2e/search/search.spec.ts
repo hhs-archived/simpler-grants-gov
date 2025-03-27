@@ -27,13 +27,11 @@ import {
 } from "tests/e2e/search/searchSpecUtil";
 
 test.describe("Search page tests", () => {
+  // Set all inputs, then refresh the page. Those same inputs should be
+  // set from query params.
   test("should refresh and retain filters in a new tab", async ({ page }, {
     project,
   }) => {
-    await page.goto("/search");
-
-    // Set all inputs, then refresh the page. Those same inputs should be
-    // set from query params.
     const searchTerm = "education";
     const statusCheckboxes = {
       "status-closed": "closed",
@@ -55,10 +53,7 @@ test.describe("Search page tests", () => {
       "category-recovery_act": "recovery_act",
       "category-agriculture": "agriculture",
     };
-
-    await waitForSearchResultsInitialLoad(page);
-    await selectSortBy(page, "agencyDesc");
-    await expectSortBy(page, "agencyDesc");
+    await page.goto("/search");
 
     if (project.name.match(/[Mm]obile/)) {
       await toggleMobileSearchFilters(page);
@@ -67,6 +62,7 @@ test.describe("Search page tests", () => {
       waitForSearchResultsInitialLoad(page),
       waitForFilterOptions(page, "agency"),
     ]);
+
     await selectSortBy(page, "agencyDesc");
     await expectSortBy(page, "agencyDesc");
 
