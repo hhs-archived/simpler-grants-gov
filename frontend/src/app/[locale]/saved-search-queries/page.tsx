@@ -56,7 +56,6 @@ export default async function SavedSearchQueries({
 }: LocalizedPageProps) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "SavedSearches" });
-  const session = await getSession();
   let savedSearches;
 
   const paramDisplayMapping = validSearchQueryParamKeys.reduce(
@@ -67,12 +66,8 @@ export default async function SavedSearchQueries({
     {} as { [key in ValidSearchQueryParam]: string },
   );
 
-  if (!session || !session.token) {
-    redirect("/unauthorized");
-  }
-
   try {
-    savedSearches = await fetchSavedSearches(session.token, session.user_id);
+    savedSearches = await fetchSavedSearches();
   } catch (e) {
     return (
       <>
