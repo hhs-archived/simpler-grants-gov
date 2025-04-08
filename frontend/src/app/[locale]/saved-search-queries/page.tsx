@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Metadata } from "next";
-import { getSession } from "src/services/auth/session";
+import { getSession } from "src/services/auth/loginGovSession";
 import { fetchSavedSearches } from "src/services/fetch/fetchers/savedSearchFetcher";
 import { LocalizedPageProps } from "src/types/intl";
 import {

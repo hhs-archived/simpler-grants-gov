@@ -5,7 +5,7 @@ import {
   readError,
   UnauthorizedError,
 } from "src/errors";
-import { getSession } from "src/services/auth/session";
+import { getSession } from "src/services/auth/loginGovSession";
 import {
   handleDeleteSavedSearch,
   handleSavedSearch,

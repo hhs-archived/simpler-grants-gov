@@ -1,5 +1,5 @@
 import { readError, UnauthorizedError } from "src/errors";
-import { getSession } from "src/services/auth/session";
+import { getSession } from "src/services/auth/loginGovSession";
 import { fetchSavedSearches } from "src/services/fetch/fetchers/savedSearchFetcher";
 
 // this could be a GET, but eventually we may want to pass pagination info in the body rather than hard coding

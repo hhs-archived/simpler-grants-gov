@@ -1,5 +1,5 @@
 import { ApiRequestError, readError, UnauthorizedError } from "src/errors";
-import { getSession } from "src/services/auth/session";
+import { getSession } from "src/services/auth/loginGovSession";
 import { handleSavedOpportunity } from "src/services/fetch/fetchers/savedOpportunityFetcher";
 
 export const POST = async (request: Request) => {

@@ -1,4 +1,4 @@
-import { getSession } from "src/services/auth/session";
+import { getSession } from "src/services/auth/loginGovSession";
 
 import { NextResponse } from "next/server";
 

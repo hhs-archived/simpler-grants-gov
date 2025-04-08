@@ -1,21 +1,22 @@
 "server only";
 
-import { KeyObject } from "crypto";
 import { JWTPayload, jwtVerify, SignJWT } from "jose";
 
 import { cookies } from "next/headers";
 
+import { EncryptionKeyTypes } from "./loginGovSession";
+
 export const CLIENT_JWT_ENCRYPTION_ALGORITHM = "HS256";
 export const API_JWT_ENCRYPTION_ALGORITHM = "RS256";
 
-// returns a new date 1 week from time of function call
-export const newExpirationDate = () =>
-  new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+// returns a new date 15 mins from time of function call
+// export const newExpirationDate = () => new Date(Date.now() + 15 * 60 * 1000);
+export const newExpirationDate = () => new Date(Date.now() + 60 * 1000);
 
 // extracts payload object from jwt string using passed encrytion key and algo
-export const decrypt = async (
+export const decrypt = async <T extends EncryptionKeyTypes>(
   jwt = "",
-  encryptionKey: KeyObject | Uint8Array,
+  encryptionKey: T,
   algorithm: string,
 ): Promise<JWTPayload | null> => {
   try {

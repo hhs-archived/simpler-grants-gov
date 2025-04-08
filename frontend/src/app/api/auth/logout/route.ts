@@ -1,5 +1,5 @@
 import { ApiRequestError, readError, UnauthorizedError } from "src/errors";
-import { getSession } from "src/services/auth/session";
+import { getSession } from "src/services/auth/loginGovSession";
 import { deleteSession } from "src/services/auth/sessionUtils";
 import { postLogout } from "src/services/fetch/fetchers/userFetcher";
 

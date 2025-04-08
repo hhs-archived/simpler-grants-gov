@@ -122,6 +122,9 @@ export class FeatureFlagsManager {
    *
    */
   middleware(request: NextRequest, response: NextResponse): NextResponse {
+    if (request.url.match(/\/api\//)) {
+      return response;
+    }
     const paramValue = request.nextUrl.searchParams.get(FEATURE_FLAGS_KEY);
 
     const featureFlagsFromQuery =

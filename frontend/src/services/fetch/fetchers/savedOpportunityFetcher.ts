@@ -1,6 +1,6 @@
 "server-only";
 
-import { getSession } from "src/services/auth/session";
+import { getSession } from "src/services/auth/loginGovSession";
 import { fetchUserWithMethod } from "src/services/fetch/fetchers/fetchers";
 import { MinimalOpportunity } from "src/types/opportunity/opportunityResponseTypes";
 
