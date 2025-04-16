@@ -19,18 +19,17 @@ const SavedOpportunitiesList = ({
 }: {
   opportunities: SearchResponseData;
 }) => {
+  const savedOpportunitiesList = opportunities.map(
+    (opportunity) =>
+      opportunity && (
+        <li key={opportunity.opportunity_id}>
+          <SearchResultsListItem opportunity={opportunity} saved={true} />
+        </li>
+      ),
+  );
+
   return (
-    <ul className="usa-prose usa-list--unstyled">
-      {opportunities.map((opportunity) => (
-        <>
-          {opportunity && (
-            <li key={opportunity.opportunity_id}>
-              <SearchResultsListItem opportunity={opportunity} saved={true} />
-            </li>
-          )}
-        </>
-      ))}
-    </ul>
+    <ul className="usa-prose usa-list--unstyled">{savedOpportunitiesList}</ul>
   );
 };
 
