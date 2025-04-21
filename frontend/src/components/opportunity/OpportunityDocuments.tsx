@@ -59,16 +59,16 @@ const OpportunityDocuments = ({
   const t = useTranslations("OpportunityListing.documents");
 
   return (
-    <>
+    <div className="usa-prose margin-top-6">
       <h2 id="opportunity_documents">{t("title")}</h2>
       {documents.length > 0 ? (
         <Table className="width-full">
           <DocumentTable documents={documents} opportunityId={opportunityId} />
         </Table>
       ) : (
-        <p>--</p>
+        <p>{t("noDocuments")}</p>
       )}
-    </>
+    </div>
   );
 };
 
