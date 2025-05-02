@@ -1,3 +1,4 @@
+/* eslint-disable testing-library/prefer-screen-queries */
 import { expect, test } from "@playwright/test";
 
 test("should copy search query URL to clipboard", async ({ page }) => {
