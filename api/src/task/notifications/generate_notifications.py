@@ -250,9 +250,11 @@ class NotificationTask(Task):
 
                 message += (
                     "Please carefully review the opportunity listings for all requirements and deadlines.\n\n"
-                    "Sign in to Simpler.Grants.gov to manage your bookmarked opportunities.\n\n"
-                    "If you have questions, please contact the Grants.gov Contact Center:\n"
-                    "{CONTACT_INFO}"
+                    "<a href='{self.frontend_base_url}/saved-grants' target='_blank'>To unsubscribe from email notifications for an opportunity, delete it from your bookmarked funding opportunities.</a>\n\n"
+                    "<b>Questions?</b>\n",
+                    "If you have questions about an opportunity, please contact the grantor using the contact information on the listing page.\n\n"
+                    "If you encounter technical issues while applying on Grants.gov, please reach out to the Contact Center:\n"
+                    "{CONTACT_INFO}",
                 )
 
             if len(container.closing_opportunities) > 0:
