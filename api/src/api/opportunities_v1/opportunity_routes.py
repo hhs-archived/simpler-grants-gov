@@ -2,7 +2,7 @@ import io
 import logging
 
 from flask import Response
-
+from werkzeug.utils import secure_filename
 import src.adapters.db as db
 import src.adapters.db.flask_db as flask_db
 import src.adapters.search as search
@@ -235,3 +235,18 @@ def opportunity_get(db_session: db.Session, opportunity_id: int) -> response.Api
         opportunity = get_opportunity(db_session, opportunity_id)
 
     return response.ApiResponse(message="Success", data=opportunity)
+
+
+@opportunity_blueprint.post("/files")
+@opportunity_blueprint.input(opportunity_schemas.MyInputSchema(), location="form_and_files")
+@opportunity_blueprint.output(opportunity_schemas.MyOutputSchema())
+def file_upload(form_and_files_data: dict) -> response.ApiResponse:
+    my_file = form_and_files_data["my_file"]
+    print(form_and_files_data)
+
+    filename = secure_filename(my_file.filename)
+
+    with open("out-" + filename, "wb") as f:
+        my_file.save(f)
+
+    return response.ApiResponse(message="Success")

@@ -555,3 +555,12 @@ class SavedOpportunityResponseV1Schema(Schema):
     )
 
     summary = fields.Nested(SavedOpportunitySummaryV1Schema())
+
+
+class MyInputSchema(Schema):
+    my_file = fields.File()
+
+    other_field = fields.String()
+
+class MyOutputSchema(AbstractResponseSchema):
+    pass
