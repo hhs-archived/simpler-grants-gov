@@ -17,6 +17,8 @@ export interface SearchFilterRequestBody {
   close_date?: RelativeDateRangeFilter;
 }
 
+export type QueryOperator = "AND" | "OR";
+
 export type PaginationOrderBy =
   | "relevancy"
   | "opportunity_id"
@@ -42,6 +44,7 @@ export type SearchRequestBody = {
   filters?: SearchFilterRequestBody;
   query?: string;
   format?: string;
+  query_operator?: QueryOperator;
 };
 
 export enum SearchFetcherActionType {
@@ -86,6 +89,7 @@ export interface QueryParamData extends FilterQueryParamData {
   page: number;
   sortby: SortOptions | null;
   query?: string | null;
+  andOr?: QueryOperator;
   actionType?: SearchFetcherActionType;
   fieldChanged?: string;
 }

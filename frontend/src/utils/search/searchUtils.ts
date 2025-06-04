@@ -7,6 +7,7 @@ import {
 } from "src/types/search/searchFilterTypes";
 import { QuerySetParam } from "src/types/search/searchQueryTypes";
 import {
+  QueryOperator,
   QueryParamData,
   SearchFetcherActionType,
 } from "src/types/search/searchRequestTypes";
@@ -67,7 +68,7 @@ export function convertSearchParamsToProperTypes(
     agency: paramToSet(params.agency),
     category: paramToSet(params.category),
     closeDate: paramToDateRange(params.closeDate),
-    andOr: paramToSet(params.andOr),
+    andOr: (params.andOr as QueryOperator) || "",
     sortby: (params.sortby as SortOptions) || null, // Convert empty string to null if needed
 
     // Ensure page is at least 1 or default to 1 if undefined
