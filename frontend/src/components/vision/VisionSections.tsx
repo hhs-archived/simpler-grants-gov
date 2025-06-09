@@ -3,10 +3,14 @@ import VisionGoals from "src/components/vision/sections/VisionGoals";
 import VisionHeader from "src/components/vision/sections/VisionHeader";
 import VisionMission from "src/components/vision/sections/VisionMission";
 
-export default function VisionPageSections() {
+export default function VisionPageSections({
+  test,
+}: {
+  test: Promise<string>;
+}) {
   return (
     <>
-      <VisionHeader />
+      <VisionHeader test={test} />
       <VisionMission />
       <VisionGoals />
       <VisionGetThere />

@@ -2,11 +2,12 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Grid, GridContainer } from "@trussworks/react-uswds";
 
-export default function VisionHeader() {
+export default function VisionHeader({ test }: { test: Promise<string> }) {
   const t = useTranslations("Vision");
 
   return (
     <div className="text-white bg-primary-darkest padding-top-2 tablet:padding-y-6">
+      <div id="test">AAAAA{test}AAAAA</div>
       <GridContainer>
         <Grid row gap>
           <Grid tablet={{ col: "fill" }}>
