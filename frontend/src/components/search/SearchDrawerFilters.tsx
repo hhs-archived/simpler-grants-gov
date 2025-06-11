@@ -52,6 +52,7 @@ export async function SearchDrawerFilters({
         title={t("accordion.titles.status")}
         defaultEmptySelection={new Set([SEARCH_NO_STATUS_VALUE])}
         facetCounts={facetCounts?.opportunity_status || {}}
+        contentClassName="maxh-mobile-lg overflow-auto position-relative"
       />
       <CheckboxFilter
         filterOptions={fundingOptions}
@@ -59,6 +60,7 @@ export async function SearchDrawerFilters({
         queryParamKey="fundingInstrument"
         title={t("accordion.titles.funding")}
         facetCounts={facetCounts?.funding_instrument || {}}
+        contentClassName="overflow-visible"
       />
       <CheckboxFilter
         query={eligibility}
@@ -66,6 +68,7 @@ export async function SearchDrawerFilters({
         title={t("accordion.titles.eligibility")}
         filterOptions={eligibilityOptions}
         facetCounts={facetCounts?.applicant_type || {}}
+        contentClassName="maxh-mobile-lg overflow-auto position-relative"
       />
       <Suspense
         fallback={
@@ -93,6 +96,7 @@ export async function SearchDrawerFilters({
         queryParamKey={"category"}
         title={t("accordion.titles.category")}
         facetCounts={facetCounts?.funding_category || {}}
+        contentClassName="maxh-mobile-lg overflow-auto position-relative"
       />
     </>
   );
