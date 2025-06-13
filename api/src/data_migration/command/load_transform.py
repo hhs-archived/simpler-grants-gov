@@ -10,7 +10,7 @@ import src.adapters.db as db
 import src.adapters.db.flask_db as flask_db
 import src.db.models.foreign
 import src.db.models.staging
-from src.task.ecs_background_task import ecs_background_task
+from src.util.ecs_background_task import ecs_background_task
 from src.task.opportunities.set_current_opportunities_task import SetCurrentOpportunitiesTask
 
 from ...task.opportunities.store_opportunity_version_task import StoreOpportunityVersionTask

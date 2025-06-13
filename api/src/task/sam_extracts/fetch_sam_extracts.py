@@ -18,7 +18,7 @@ from src.adapters.sam_gov.factory import create_sam_gov_client
 from src.adapters.sam_gov.models import SamExtractRequest
 from src.constants.lookup_constants import SamGovExtractType, SamGovProcessingStatus
 from src.db.models.sam_extract_models import SamExtractFile
-from src.task.ecs_background_task import ecs_background_task
+from src.util.ecs_background_task import ecs_background_task
 from src.task.task import Task
 from src.task.task_blueprint import task_blueprint
 from src.util import datetime_util

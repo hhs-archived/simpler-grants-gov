@@ -4,7 +4,7 @@ import time
 import pytest
 
 from src.logging.flask_logger import add_extra_data_to_global_logs
-from src.task.ecs_background_task import ecs_background_task
+from src.util.ecs_background_task import ecs_background_task
 
 
 def test_ecs_background_task(app, caplog, monkeypatch_session):

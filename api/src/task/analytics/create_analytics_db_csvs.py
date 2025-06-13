@@ -9,7 +9,7 @@ from pydantic import Field
 import src.adapters.db as db
 import src.adapters.db.flask_db as flask_db
 from src.db.models import metadata as api_metadata
-from src.task.ecs_background_task import ecs_background_task
+from src.util.ecs_background_task import ecs_background_task
 from src.task.task import Task
 from src.task.task_blueprint import task_blueprint
 from src.util import file_util

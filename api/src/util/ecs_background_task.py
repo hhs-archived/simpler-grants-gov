@@ -63,6 +63,7 @@ def ecs_background_task(task_name: str) -> Callable[[Callable[P, T]], Callable[P
 
 @contextlib.contextmanager
 def _ecs_background_task_impl(task_name: str) -> Generator[None, None, None]:
+    print("hello2")
     # The actual implementation, see the docs on the
     # decorator method above for details on usage
     start = time.perf_counter()
@@ -72,6 +73,7 @@ def _ecs_background_task_impl(task_name: str) -> Generator[None, None, None]:
 
     try:
         yield
+        print("after")
     except Exception:
         # We want to make certain that any exception will always
         # be logged as an error

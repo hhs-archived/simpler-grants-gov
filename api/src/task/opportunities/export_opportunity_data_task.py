@@ -16,7 +16,7 @@ from src.constants.lookup_constants import ExtractType
 from src.db.models.extract_models import ExtractMetadata
 from src.db.models.opportunity_models import CurrentOpportunitySummary, Opportunity
 from src.services.opportunities_v1.opportunity_to_csv import opportunities_to_csv
-from src.task.ecs_background_task import ecs_background_task
+from src.util.ecs_background_task import ecs_background_task
 from src.task.task import Task
 from src.task.task_blueprint import task_blueprint
 from src.util.datetime_util import get_now_us_eastern_datetime

@@ -12,8 +12,11 @@ import sqlalchemy
 from alembic.config import Config
 from alembic.runtime import migration
 
+
+from src.util.ecs_background_task import ecs_background_task
 import src.logging
 from src.db.models.lookup.sync_lookup_values import sync_lookup_values
+
 
 logger = logging.getLogger(__name__)
 alembic_cfg = Config(os.path.join(os.path.dirname(__file__), "./alembic.ini"))
@@ -21,22 +24,25 @@ alembic_cfg = Config(os.path.join(os.path.dirname(__file__), "./alembic.ini"))
 # Override the script_location to be absolute based on this file's directory.
 alembic_cfg.set_main_option("script_location", os.path.dirname(__file__))
 
+src.logging.init("migrations")
 
+@ecs_background_task("migrate-up")
 def up(revision: str = "head") -> None:
+    print("hello")
     enable_query_logging()
     command.upgrade(alembic_cfg, revision)
 
     # We want logging for the lookups, but alembic already sets
     # it up in env.py, so set it up again separately for the syncing
-    with src.logging.init("sync_lookup_values"):
-        sync_lookup_values()
+    #with src.logging.init("sync_lookup_values"):
+    sync_lookup_values()
 
-
+@ecs_background_task("migrate-down")
 def down(revision: str = "-1") -> None:
     enable_query_logging()
     command.downgrade(alembic_cfg, revision)
 
-
+@ecs_background_task("migrate-down-all")
 def downall(revision: str = "base") -> None:
     enable_query_logging()
     command.downgrade(alembic_cfg, revision)

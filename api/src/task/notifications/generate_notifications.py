@@ -22,7 +22,7 @@ from src.db.models.user_models import (
     UserSavedSearch,
 )
 from src.services.opportunities_v1.search_opportunities import search_opportunities_id
-from src.task.ecs_background_task import ecs_background_task
+from src.util.ecs_background_task import ecs_background_task
 from src.task.task import Task
 from src.task.task_blueprint import task_blueprint
 from src.util import datetime_util
